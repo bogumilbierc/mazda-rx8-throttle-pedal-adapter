@@ -6,11 +6,11 @@
 
 ## Plug pinout
 
-| pin number | sensor | function |
-|--|--|--|
-| A | main |  +5V |
-| B | main |  GND |
-| C | main |  sensor output |
-| D | secondary |  +5V |
-| E | secondary |  GND |
-| F | secondary |  sensor output |
+| pin number | wire color       | sensor    | function       |
+| ---------- | ---------------- | --------- | -------------- |
+| A          | white-red        | main      | sensor output  |
+| B          | gray             | main      | GND            |
+| C          | green-red        | main      | +5V            |
+| D          | red-white        | secondary | sensor output |
+| E          | lightgreen-black | secondary | GND            |
+| F          | red-yellow       | secondary | +5V            |
