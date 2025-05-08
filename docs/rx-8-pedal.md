@@ -19,7 +19,7 @@ Pins are numbered looking at the face of the plug.
 
 ## Pedal voltages
 
-Voltages captured using external power supply and two multimeters.
+Voltages captured using an external power supply and two multimeters.
 
 | HIGH | LOW  | DIFF |
 |------|------|------|
@@ -38,7 +38,7 @@ Voltages captured using external power supply and two multimeters.
 | 3,61 | 3,05 | 0,56 |
 | 3,9  | 3,35 | 0,55 |
 
-There is ~0.55V of difference between two potentiometers in the pedal.
+There is ~0.55 V of difference between two potentiometers in the pedal.
 
 If we assume that we will divide pedal position into 100 steps, then each step will have ~0.02 voltage range.
 This should be good enough for Arduino's ADC.
