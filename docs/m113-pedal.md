@@ -9,7 +9,7 @@
 | pin number | sensor                 | function      |
 |------------|------------------------|---------------|
 | 1          | main                   | +5V           |
-| 2          | main                   | +5V           |
+| 2          | secondary              | +5V           |
 | 3          | secondary              | GND           |
 | 4          | secondary (up to 2.5V) | sensor output |
 | 5          | main(up to 5v)         | sensor output |
