@@ -16,13 +16,16 @@
 | 6          | main                   | GND           |
 
 ## ECU pinout
+
 ![ecu pinout](./m113-ecu-pinout.jpeg)
 
 ## Pedal voltages
 
+### Captured with multimeter
+
 Voltages captured using an external power supply and two multimeters.
 
-Note: This needs more accurate measurements (and probably checking in ECU diagnostics), but it seems like `high=2*low`
+This not exactly `high=2*low`, probably due to using second-hand pedal that wasn't ideal.
 
 | high | low  | diff | multiplier       |
 |------|------|------|------------------|
@@ -52,8 +55,38 @@ Note: This needs more accurate measurements (and probably checking in ECU diagno
 | 4.39 | 2.27 | 2.12 | 1.93392070484582 |
 | 4.68 | 2.32 | 2.36 | 2.01724137931034 |
 
+### Captured via OBD
 
+Voltages captured using DS150 clone.
 
+This is much closer to `high=2*low`, probably safe to assume it is and take into consideration that pedal in the car was
+not new either.
+
+| high | low  | multiplier  |
+| ---- | ---- | ----------- |
+| 0,33 | 0,19 | 1,736842105 |
+| 1,05 | 0,6  | 1,75        |
+| 1,38 | 0,69 | 2           |
+| 1,6  | 0,8  | 2           |
+| 1,85 | 0,93 | 1,989247312 |
+| 1,93 | 1,04 | 1,855769231 |
+| 1,96 | 0,98 | 2           |
+| 2,23 | 1,12 | 1,991071429 |
+| 2,3  | 1,15 | 2           |
+| 2,36 | 1,18 | 2           |
+| 2,56 | 1,28 | 2           |
+| 2,65 | 1,33 | 1,992481203 |
+| 2,73 | 1,37 | 1,99270073  |
+| 2,98 | 1,5  | 1,986666667 |
+| 3,24 | 1,63 | 1,987730061 |
+| 3,31 | 1,66 | 1,993975904 |
+| 3,54 | 1,78 | 1,988764045 |
+| 3,55 | 1,78 | 1,994382022 |
+| 3,89 | 1,95 | 1,994871795 |
+| 3,97 | 1,99 | 1,994974874 |
+| 4,06 | 2,3  | 2           |
+| 4,31 | 2,16 | 1,99537037  |
+| 4,67 | 2,34 | 1,995726496 |
 
 
 
