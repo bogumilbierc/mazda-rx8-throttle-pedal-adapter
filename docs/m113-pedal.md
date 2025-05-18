@@ -15,6 +15,9 @@
 | 5          | main(up to 5v)         | sensor output |
 | 6          | main                   | GND           |
 
+## ECU pinout
+![ecu pinout](./m113-ecu-pinout.jpeg)
+
 ## Pedal voltages
 
 Voltages captured using an external power supply and two multimeters.
