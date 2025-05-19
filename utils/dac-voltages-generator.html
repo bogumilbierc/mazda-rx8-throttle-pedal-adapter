@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voltage table converter - check console output</title>
+
+    <script type="text/javascript">
+
+        const MIN_VOLTAGE = 0.33;
+        const MAX_VOLTAGE = 4.73;
+
+        console.log("Mapping voltages table");
+
+        const voltagesTable = [...Array(101).keys()].map((percentage) => {
+            const voltageRange = MAX_VOLTAGE - MIN_VOLTAGE;
+            const voltageIncrement = voltageRange / 100;
+            return (MIN_VOLTAGE + percentage * voltageIncrement).toFixed(2);
+        });
+
+        console.log("Voltages Table Object:")
+        console.log(voltagesTable);
+
+        const voltagesTableCppValue = voltagesTable.join(",")
+        console.log(`Voltages Table Cpp Value: ${voltagesTableCppValue}`)
+        console.log(`float VOLTAGES_FOR_M113_ECU[] = {${voltagesTableCppValue}};`);
+
+    </script>
+
+</head>
+<body>
+
+<h1>Voltage table converter</h1>
+<p>Check console output in Dev Tools</p>
+
+</body>
+
+<footer>
+
+</footer>
+
+</html>

@@ -34,3 +34,7 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 - RX-8 pedal plug
 - two resistors for voltage divider
 - some wires
+
+## Arduino IDE setup
+
+Install https://github.com/RobTillaart/MCP4725 library
