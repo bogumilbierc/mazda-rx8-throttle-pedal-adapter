@@ -7,6 +7,9 @@
 * A2 - C
 **/
 
+int DAC_ADDRESS = 0x60;
+
+
 bool DEBUG_ENABLED = true;
 
 long MAX_LOW = 688;
@@ -30,29 +33,19 @@ void setup() {
 }
 
 void loop() {
-
   int lowPercentage = readLowPedalPercentage();
   int highPercentage = readHighPedalPercentage();
 
-  if (abs(highPercentage - lowPercentage) > 4) {
-    // todo: blink led, beep - they are out of sync
-    THROTTLE_LIMIT = 30;
-    if (DEBUG_ENABLED) {
-      Serial.println("Sensors are out of sync.");
-    }
-  } else {
-    THROTTLE_LIMIT = 100;
-  }
+  setThrottleLimit(lowPercentage, highPercentage);
 
-  int percentageToUse = (lowPercentage + highPercentage) / 2;
+  int calculatedAveragePercentage = (lowPercentage + highPercentage) / 2;
 
   if (DEBUG_ENABLED) {
-    String percentagePrintValue = "ThrottlePos:: " + String(percentageToUse);
+    String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
     Serial.println(percentagePrintValue);
   }
 
-
-  previousPercentage = percentageToUse;
+  previousPercentage = calculatedAveragePercentage;
 }
 
 int readLowPedalPercentage() {
@@ -65,4 +58,16 @@ int readHighPedalPercentage() {
   int highInput = analogRead(A1);
   long upperPart = (highInput - MIN_LOW) * 100;
   return upperPart / RANGE_LOW;
+}
+
+void setThrottleLimit(int lowPercentage, int highPercentage) {
+  if (abs(highPercentage - lowPercentage) > 4) {
+    // todo: blink led, beep - they are out of sync
+    THROTTLE_LIMIT = 30;
+    if (DEBUG_ENABLED) {
+      Serial.println("Sensors are out of sync.");
+    }
+  } else {
+    THROTTLE_LIMIT = 100;
+  }
 }
