@@ -32,8 +32,12 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 - Arduino Nano <br> ![arduino nano](./docs/elements/arduino-nano.png)
 - MCP4725 DAC <br> ![mcp 4725 dac](./docs/elements/mcp-4725-dac.png)
 - RX-8 pedal plug
-- two resistors for voltage divider
+- two resistors for voltage divider (I choose 5.7 kOhm, but it does not really matter)
 - some wires
+
+## Circuit diagram
+
+![circuit diagram](./docs/circuit-diagram.png)
 
 ## Arduino IDE setup
 
