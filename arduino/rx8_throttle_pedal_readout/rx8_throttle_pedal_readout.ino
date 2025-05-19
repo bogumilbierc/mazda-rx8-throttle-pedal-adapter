@@ -6,9 +6,8 @@
 * A1 - F
 * A2 - C
 **/
-int value = 0;
-int min = 99999;
-int max = 0;
+
+bool DEBUG_ENABLED = true;
 
 long MAX_LOW = 688;
 long MAX_HIGH = 800;
@@ -19,45 +18,51 @@ long MIN_HIGH = 323;
 int RANGE_LOW = MAX_LOW - MIN_LOW;
 int RANGE_HIGH = MAX_HIGH - MIN_HIGH;
 
-int previousLow = 0;
-int previousHigh = 0;
+int THROTTLE_LIMIT = 100;
 
 int previousPercentage = -2;
 
 void setup() {
-  Serial.begin(9600);
+  if (DEBUG_ENABLED) {
+    Serial.begin(9600);
+  }
   analogReference(EXTERNAL);
 }
 
 void loop() {
-  int highInput = analogRead(A1);
-  int lowInput = analogRead(A2);
 
-  if (abs(previousLow - lowInput) > 3) {
-    int lowPercentage = throttlePercentageLow(lowInput);
-    int highPercentage = throttlePercentageHigh(highInput);
+  int lowPercentage = readLowPedalPercentage();
+  int highPercentage = readHighPedalPercentage();
 
-    if (abs(highPercentage - lowPercentage) > 4) {
-      // todo: blink led, beep - they are out of sync
+  if (abs(highPercentage - lowPercentage) > 4) {
+    // todo: blink led, beep - they are out of sync
+    THROTTLE_LIMIT = 30;
+    if (DEBUG_ENABLED) {
+      Serial.println("Sensors are out of sync.");
     }
-    int percentageToUse = (lowPercentage + highPercentage) / 2;
-
-
-    if (abs(previousPercentage - percentageToUse) > 0) {
-      String percentagePrintValue = "ThrottlePos:: " + String(percentageToUse);
-      Serial.println(percentagePrintValue);
-    }
-    previousPercentage = percentageToUse;
+  } else {
+    THROTTLE_LIMIT = 100;
   }
-  previousLow = lowInput;
+
+  int percentageToUse = (lowPercentage + highPercentage) / 2;
+
+  if (DEBUG_ENABLED) {
+    String percentagePrintValue = "ThrottlePos:: " + String(percentageToUse);
+    Serial.println(percentagePrintValue);
+  }
+
+
+  previousPercentage = percentageToUse;
 }
 
-int throttlePercentageLow(long current) {
-  long upperPart = (current - MIN_LOW) * 100;
+int readLowPedalPercentage() {
+  int lowInput = analogRead(A2);
+  long upperPart = (lowInput - MIN_LOW) * 100;
   return upperPart / RANGE_LOW;
 }
 
-int throttlePercentageHigh(long current) {
-  long upperPart = (current - MIN_HIGH) * 100;
-  return upperPart / RANGE_HIGH;
+int readHighPedalPercentage() {
+  int highInput = analogRead(A1);
+  long upperPart = (highInput - MIN_LOW) * 100;
+  return upperPart / RANGE_LOW;
 }
