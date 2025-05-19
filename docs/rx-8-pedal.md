@@ -3,19 +3,20 @@
 ## Pedal plug
 
 ![pedal plug picture](./rx8-throttle-pedal-plug.png)
+![pedal plug with wires](./rx8-throttle-pedal-plug-with-wires.png)
 
-Pins are numbered looking at the face of the plug.
+Pins are numbered looking from the wiring side (back side of the plug).
 
 ## Plug pinout
 
 | pin number | wire color       | sensor          | function      |
 |------------|------------------|-----------------|---------------|
-| A          | white-red        | main (high)     | sensor output |
-| B          | gray             | main            | GND           |
-| C          | green-red        | main            | +5V           |
-| D          | red-white        | secondary (low) | sensor output |
-| E          | lightgreen-black | secondary       | GND           |
-| F          | red-yellow       | secondary       | +5V           |
+| F          | white-red        | main (high)     | sensor output |
+| E          | gray             | main            | GND           |
+| D          | green-red        | main            | +5V           |
+| C          | red-white        | secondary (low) | sensor output |
+| B          | lightgreen-black | secondary       | GND           |
+| A          | red-yellow       | secondary       | +5V           |
 
 ## Pedal voltages
 
