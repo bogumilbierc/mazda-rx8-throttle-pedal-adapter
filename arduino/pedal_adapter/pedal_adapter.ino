@@ -14,7 +14,7 @@ int DAC_ADDRESS = 0x60;
 
 Adafruit_MCP4725 mcp4725;
 
-bool DEBUG_ENABLED = true;
+bool DEBUG_ENABLED = false;
 
 long MIN_LOW = 212;
 long MIN_HIGH = 323;
