@@ -63,7 +63,7 @@ This is much closer to `high=2*low`, probably safe to assume it is and take into
 not new either.
 
 | high | low  | multiplier  |
-| ---- | ---- | ----------- |
+|------|------|-------------|
 | 0,33 | 0,19 | 1,736842105 |
 | 1,05 | 0,6  | 1,75        |
 | 1,38 | 0,69 | 2           |

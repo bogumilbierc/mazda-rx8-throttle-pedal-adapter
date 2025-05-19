@@ -2,7 +2,7 @@
 
 ## Pedal plug
 
-![pedal plug picture](./rx8-throttle-pedal-plug.png)
+![pedal plug picture](./rx8-throttle-pedal-plug.png)<br>
 ![pedal plug with wires](./rx8-throttle-pedal-plug-with-wires.png)
 
 Pins are numbered looking from the wiring side (back side of the plug).
