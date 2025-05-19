@@ -3,8 +3,8 @@
 * This code can be used to read values coming from Mazda RX-8 Throttle Pedal
 * Connections
 * Arduino - Pedal
-* A1 - A
-* A2 - D
+* A1 - F
+* A2 - C
 **/
 int value = 0;
 int min = 99999;
@@ -37,7 +37,7 @@ void loop() {
     int lowPercentage = throttlePercentageLow(lowInput);
     int highPercentage = throttlePercentageHigh(highInput);
 
-    if (abs(highPercentage - lowPercentage) > 2) {
+    if (abs(highPercentage - lowPercentage) > 4) {
       // todo: blink led, beep - they are out of sync
     }
     int percentageToUse = (lowPercentage + highPercentage) / 2;
