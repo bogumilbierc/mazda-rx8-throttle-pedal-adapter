@@ -41,4 +41,5 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 
 ## Arduino IDE setup
 
-Install Adafruit_MCP4725 library
+- Install Adafruit_MCP4725 library
+- Load project from `arduino/pedal_adapter/pedal_adapter.ino`
