@@ -7,12 +7,16 @@
 * A2 - C
 **/
 
-#include "MCP4725.h"
+#include <Wire.h>
+//MCP4725 library
+#include <Adafruit_MCP4725.h>
 
-// voltages generated with "utils/dac-voltages-generator.html"
-float VOLTAGES_FOR_M113_ECU[] = { 0.33, 0.37, 0.42, 0.46, 0.51, 0.55, 0.59, 0.64, 0.68, 0.73, 0.77, 0.81, 0.86, 0.90, 0.95, 0.99, 1.03, 1.08, 1.12, 1.17, 1.21, 1.25, 1.30, 1.34, 1.39, 1.43, 1.47, 1.52, 1.56, 1.61, 1.65, 1.69, 1.74, 1.78, 1.83, 1.87, 1.91, 1.96, 2.00, 2.05, 2.09, 2.13, 2.18, 2.22, 2.27, 2.31, 2.35, 2.40, 2.44, 2.49, 2.53, 2.57, 2.62, 2.66, 2.71, 2.75, 2.79, 2.84, 2.88, 2.93, 2.97, 3.01, 3.06, 3.10, 3.15, 3.19, 3.23, 3.28, 3.32, 3.37, 3.41, 3.45, 3.50, 3.54, 3.59, 3.63, 3.67, 3.72, 3.76, 3.81, 3.85, 3.89, 3.94, 3.98, 4.03, 4.07, 4.11, 4.16, 4.20, 4.25, 4.29, 4.33, 4.38, 4.42, 4.47, 4.51, 4.55, 4.60, 4.64, 4.69, 4.73 };
+// fractions generated with "utils/dac-voltages-generator.html"
+int FRACTIONS_FOR_M113_ECU[] = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 598, 630, 663, 704, 737, 778, 811, 843, 884, 917, 958, 991, 1024, 1064, 1097, 1138, 1171, 1204, 1245, 1277, 1318, 1351, 1384, 1425, 1458, 1499, 1531, 1564, 1605, 1638, 1679, 1712, 1744, 1785, 1818, 1859, 1892, 1925, 1966, 1998, 2039, 2072, 2105, 2146, 2179, 2220, 2252, 2285, 2326, 2359, 2400, 2433, 2465, 2506, 2539, 2580, 2613, 2646, 2686, 2719, 2760, 2793, 2826, 2867, 2899, 2940, 2973, 3006, 3047, 3080, 3121, 3153, 3186, 3227, 3260, 3301, 3334, 3366, 3407, 3440, 3481, 3514, 3547, 3588, 3620, 3661, 3694, 3727, 3768, 3801, 3842, 3874 };
+
 int DAC_ADDRESS = 0x60;
-MCP4725 mcp4725(0x60);
+
+Adafruit_MCP4725 mcp4725;
 
 bool DEBUG_ENABLED = true;
 
@@ -54,18 +58,12 @@ void loop() {
 }
 
 void initializeDac() {
-  bool initialized = mcp4725.begin();
+  bool initialized = mcp4725.begin(DAC_ADDRESS);
   if (DEBUG_ENABLED) {
     String dacInitPrintValue = "DAC initialized: " + String(initialized);
     Serial.println(dacInitPrintValue);
   }
-  while (!mcp4725.isConnected()) {
-    if (DEBUG_ENABLED) {
-      Serial.println("DAC not yet connected");
-    }
-  }
-  mcp4725.setMaxVoltage(5.0);
-  mcp4725.setVoltage(VOLTAGES_FOR_M113_ECU[0]);  // set pedal to 0%
+  mcp4725.setVoltage(FRACTIONS_FOR_M113_ECU[0], false);  // set pedal to 0%
 }
 
 int readLowPedalPercentage() {
@@ -93,7 +91,7 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
 }
 
 void setOutputValue(int calculatedAveragePercentage) {
-  int percentageToUse = max(calculatedAveragePercentage, THROTTLE_LIMIT);
-  float voltageToUse = VOLTAGES_FOR_M113_ECU[percentageToUse];
-  mcp4725.setVoltage(voltageToUse);
+  int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
+  float voltageToUse = FRACTIONS_FOR_M113_ECU[percentageToUse];
+  mcp4725.setVoltage(voltageToUse, false);
 }

@@ -37,4 +37,4 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 
 ## Arduino IDE setup
 
-Install https://github.com/RobTillaart/MCP4725 library
+Install Adafruit_MCP4725 library
