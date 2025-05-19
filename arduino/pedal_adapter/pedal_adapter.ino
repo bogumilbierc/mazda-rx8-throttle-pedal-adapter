@@ -1,10 +1,6 @@
 /**
-* Mazda RX-8 Throttle Pedal Readout
-* This code can be used to read values coming from Mazda RX-8 Throttle Pedal
-* Connections
-* Arduino - Pedal
-* A1 - F
-* A2 - C
+* Mazda RX-8 Throttle Pedal Adapter
+* Check README in main folder to verify wiring diagram
 **/
 
 #include <Wire.h>
