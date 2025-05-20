@@ -39,6 +39,10 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 
 ![circuit diagram](./docs/circuit-diagram.png)
 
+Circuit was drawn using https://www.circuit-diagram.org/. 
+
+Source code for the diagram is located in [circuit cddx file](./docs/circuit.cddx)
+
 ## Arduino IDE setup
 
 - Install Adafruit_MCP4725 library
