@@ -2,6 +2,7 @@
 * Mazda RX-8 Throttle Pedal Adapter
 * Check README in main folder to verify wiring diagram
 **/
+#define DEBUG_ENABLED false
 
 #include <Wire.h>
 //MCP4725 library
@@ -13,8 +14,6 @@ int FRACTIONS_FOR_M113_ECU[] = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 59
 int DAC_ADDRESS = 0x60;
 
 Adafruit_MCP4725 mcp4725;
-
-bool DEBUG_ENABLED = false;
 
 long MIN_LOW = 212;
 long MIN_HIGH = 323;
@@ -28,11 +27,11 @@ int THROTTLE_LIMIT = 100;
 int lastValue = -1;
 
 void setup() {
-  if (DEBUG_ENABLED) {
-    Serial.begin(9600);
-  }
-  analogReference(EXTERNAL);
+#if DEBUG_ENABLED == true
+  Serial.begin(9600);
+#endif
 
+  analogReference(EXTERNAL);
   initializeDac();
 }
 
@@ -44,10 +43,10 @@ void loop() {
 
   int calculatedAveragePercentage = (lowPercentage + highPercentage) / 2;
 
-  if (DEBUG_ENABLED) {
-    String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
-    Serial.println(percentagePrintValue);
-  }
+#if DEBUG_ENABLED == true
+  String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
+  Serial.println(percentagePrintValue);
+#endif
 
   if (calculatedAveragePercentage < 0) {
     calculatedAveragePercentage = 0;
@@ -58,10 +57,10 @@ void loop() {
 
 void initializeDac() {
   bool initialized = mcp4725.begin(DAC_ADDRESS);
-  if (DEBUG_ENABLED) {
-    String dacInitPrintValue = "DAC initialized: " + String(initialized);
-    Serial.println(dacInitPrintValue);
-  }
+#if DEBUG_ENABLED == true
+  String dacInitPrintValue = "DAC initialized: " + String(initialized);
+  Serial.println(dacInitPrintValue);
+#endif
   setOutputValue(0);  // set pedal to 0%
 }
 
@@ -81,9 +80,9 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
   if (abs(highPercentage - lowPercentage) > 4) {
     // todo: blink led, beep - they are out of sync
     THROTTLE_LIMIT = 30;
-    if (DEBUG_ENABLED) {
-      Serial.println("Sensors are out of sync.");
-    }
+#if DEBUG_ENABLED == true
+    Serial.println("Sensors are out of sync.");
+#endif
   } else {
     THROTTLE_LIMIT = 100;
   }
