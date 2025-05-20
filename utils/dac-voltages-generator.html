@@ -24,7 +24,7 @@
 
         const voltagesTableCppValue = voltagesTable.join(",")
         console.log(`Voltages Table Cpp Value:`)
-        console.log(`float VOLTAGES_FOR_M113_ECU[] = {${voltagesTableCppValue}};`);
+        console.log(`const float VOLTAGES_FOR_M113_ECU[] = {${voltagesTableCppValue}};`);
 
         // For Adafruit library
         const voltagesAsFractionOf4096 = voltagesTable.map((voltage) => {
@@ -33,7 +33,7 @@
         });
 
         console.log("Fraction Table Cpp Value:");
-        console.log(`int FRACTIONS_FOR_M113_ECU[] = {${voltagesAsFractionOf4096}};`);
+        console.log(`const int FRACTIONS_FOR_M113_ECU[] = {${voltagesAsFractionOf4096}};`);
 
     </script>
 

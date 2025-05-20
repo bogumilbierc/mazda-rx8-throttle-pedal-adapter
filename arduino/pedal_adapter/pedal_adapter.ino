@@ -9,22 +9,23 @@
 #include <Adafruit_MCP4725.h>
 
 // fractions generated with "utils/dac-voltages-generator.html"
-int FRACTIONS_FOR_M113_ECU[] = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 598, 630, 663, 704, 737, 778, 811, 843, 884, 917, 958, 991, 1024, 1064, 1097, 1138, 1171, 1204, 1245, 1277, 1318, 1351, 1384, 1425, 1458, 1499, 1531, 1564, 1605, 1638, 1679, 1712, 1744, 1785, 1818, 1859, 1892, 1925, 1966, 1998, 2039, 2072, 2105, 2146, 2179, 2220, 2252, 2285, 2326, 2359, 2400, 2433, 2465, 2506, 2539, 2580, 2613, 2646, 2686, 2719, 2760, 2793, 2826, 2867, 2899, 2940, 2973, 3006, 3047, 3080, 3121, 3153, 3186, 3227, 3260, 3301, 3334, 3366, 3407, 3440, 3481, 3514, 3547, 3588, 3620, 3661, 3694, 3727, 3768, 3801, 3842, 3874 };
+const int FRACTIONS_FOR_M113_ECU[] = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 598, 630, 663, 704, 737, 778, 811, 843, 884, 917, 958, 991, 1024, 1064, 1097, 1138, 1171, 1204, 1245, 1277, 1318, 1351, 1384, 1425, 1458, 1499, 1531, 1564, 1605, 1638, 1679, 1712, 1744, 1785, 1818, 1859, 1892, 1925, 1966, 1998, 2039, 2072, 2105, 2146, 2179, 2220, 2252, 2285, 2326, 2359, 2400, 2433, 2465, 2506, 2539, 2580, 2613, 2646, 2686, 2719, 2760, 2793, 2826, 2867, 2899, 2940, 2973, 3006, 3047, 3080, 3121, 3153, 3186, 3227, 3260, 3301, 3334, 3366, 3407, 3440, 3481, 3514, 3547, 3588, 3620, 3661, 3694, 3727, 3768, 3801, 3842, 3874 };
 
-int DAC_ADDRESS = 0x60;
+const int DAC_ADDRESS = 0x60;
 
-Adafruit_MCP4725 mcp4725;
-
-long MIN_LOW = 212;
-long MIN_HIGH = 323;
+const long MIN_LOW = 212;
+const long MIN_HIGH = 323;
 
 // range is (MAX-MIN) which is the same for both LOW and HIGH inputs
-int PEDAL_RANGE = 476;
+const int PEDAL_RANGE = 476;
 
+// used to limit throttle / put adapter into safety mode in case sensors go out of sync
 int THROTTLE_LIMIT = 100;
 
 // used to speed up the code -> don't call DAC if same value is passed multiple times in a row
 int lastValue = -1;
+
+Adafruit_MCP4725 mcp4725;
 
 void setup() {
 #if DEBUG_ENABLED == true
@@ -90,6 +91,9 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
 
 void setOutputValue(int calculatedAveragePercentage) {
   if (calculatedAveragePercentage == lastValue) {
+#if DEBUG_ENABLED == true
+    Serial.println("Passed value is the same as previous value. Skipping DAC call.");
+#endif
     return;
   }
   int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
