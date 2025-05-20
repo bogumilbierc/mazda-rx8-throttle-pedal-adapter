@@ -24,6 +24,9 @@ int PEDAL_RANGE = 476;
 
 int THROTTLE_LIMIT = 100;
 
+// used to speed up the code -> don't call DAC if same value is passed multiple times in a row
+int lastValue = -1;
+
 void setup() {
   if (DEBUG_ENABLED) {
     Serial.begin(9600);
@@ -59,7 +62,7 @@ void initializeDac() {
     String dacInitPrintValue = "DAC initialized: " + String(initialized);
     Serial.println(dacInitPrintValue);
   }
-  mcp4725.setVoltage(FRACTIONS_FOR_M113_ECU[0], false);  // set pedal to 0%
+  setOutputValue(0);  // set pedal to 0%
 }
 
 int readLowPedalPercentage() {
@@ -87,6 +90,9 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
 }
 
 void setOutputValue(int calculatedAveragePercentage) {
+  if (calculatedAveragePercentage == lastValue) {
+    return;
+  }
   int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
   float voltageToUse = FRACTIONS_FOR_M113_ECU[percentageToUse];
   mcp4725.setVoltage(voltageToUse, false);
