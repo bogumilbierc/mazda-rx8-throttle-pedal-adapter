@@ -99,4 +99,5 @@ void setOutputValue(int calculatedAveragePercentage) {
   int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
   float voltageToUse = FRACTIONS_FOR_M113_ECU[percentageToUse];
   mcp4725.setVoltage(voltageToUse, false);
+  lastValue = calculatedAveragePercentage;
 }
