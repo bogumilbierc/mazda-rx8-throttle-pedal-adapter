@@ -10,6 +10,7 @@ Mazda RX-8 throttle pedal adapter for Mercedes M113 ECU (M113 V8 swap into RX-8)
     * [Basic logic (runs in loop)](#basic-logic-runs-in-loop)
   * [Components](#components)
   * [Circuit diagram](#circuit-diagram)
+  * [Assembled adapter](#assembled-adapter)
   * [Arduino IDE setup](#arduino-ide-setup)
   * [Adopting a similar solution for other swaps (different ECUs/pedals)](#adopting-a-similar-solution-for-other-swaps-different-ecuspedals)
 <!-- TOC -->
@@ -54,6 +55,13 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 Circuit was drawn using https://www.circuit-diagram.org/.
 
 Source code for the diagram is located in [circuit cddx file](./docs/circuit.cddx)
+
+## Assembled adapter
+
+Please bear in mind that this was my first try.
+
+It is utterly ugly and uses breakout board (I though that arduino is going to be burning and that it would required an "
+easy swap option", but that was not the case), but I was too lazy to rebuild it into a smaller form factor.
 
 ## Arduino IDE setup
 
