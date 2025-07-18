@@ -2,6 +2,18 @@
 
 Mazda RX-8 throttle pedal adapter for Mercedes M113 ECU (M113 V8 swap into RX-8).
 
+<!-- TOC -->
+* [Mazda RX-8 throttle pedal to M113 ECU adapter](#mazda-rx-8-throttle-pedal-to-m113-ecu-adapter)
+  * [OEM Pedals documentation](#oem-pedals-documentation)
+  * [Adapter](#adapter)
+    * [How it works](#how-it-works)
+    * [Basic logic (runs in loop)](#basic-logic-runs-in-loop)
+  * [Components](#components)
+  * [Circuit diagram](#circuit-diagram)
+  * [Arduino IDE setup](#arduino-ide-setup)
+  * [Adopting a similar solution for other swaps (different ECUs/pedals)](#adopting-a-similar-solution-for-other-swaps-different-ecuspedals)
+<!-- TOC -->
+
 ## OEM Pedals documentation
 
 - [RX-8 pedal](./docs/rx-8-pedal/rx-8-pedal.md)
@@ -39,7 +51,7 @@ from DAC and divides it by two using a simple resistor-based voltage divider for
 
 ![circuit diagram](./docs/circuit-diagram.png)
 
-Circuit was drawn using https://www.circuit-diagram.org/. 
+Circuit was drawn using https://www.circuit-diagram.org/.
 
 Source code for the diagram is located in [circuit cddx file](./docs/circuit.cddx)
 
@@ -47,3 +59,15 @@ Source code for the diagram is located in [circuit cddx file](./docs/circuit.cdd
 
 - Install Adafruit_MCP4725 library
 - Load project from `arduino/pedal_adapter/pedal_adapter.ino`
+
+## Adopting a similar solution for other swaps (different ECUs/pedals)
+
+If You have a different swap than M113 You will need to:
+
+- read voltages from the throttle pedal
+    - if they have the same logic as for mercedes (one is a multiplication of the other)
+        - You need to recalculate DAC values using the script from "utils"
+    - if they have different logic (offset, whatever)
+        - You need to either:
+            - use two DACs (easier but requires small code change)
+            - use voltage subtractor (a bit more complex electronic wise, but no code changes required) 
