@@ -58,10 +58,11 @@ Source code for the diagram is located in [circuit cddx file](./docs/circuit.cdd
 
 ## Assembled adapter
 
-Please bear in mind that this was my first try.
+![arduino_with_dac](./docs/assembled/arduino_with_dac.png)
 
-It is utterly ugly and uses breakout board (I though that arduino is going to be burning and that it would required an "
-easy swap option", but that was not the case), but I was too lazy to rebuild it into a smaller form factor.
+![arduino in case](./docs/assembled/arduino_in_case.png)
+
+![full adapter](./docs/assembled/full_adapter.png)
 
 ## Arduino IDE setup
 
