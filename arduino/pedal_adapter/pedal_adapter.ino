@@ -3,6 +3,16 @@
 * Check README in main folder to verify wiring diagram
 **/
 #define DEBUG_ENABLED false
+#define FASTADC true
+
+// defines for setting and clearing register bits
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
 
 #include <Wire.h>
 //MCP4725 library
@@ -28,15 +38,27 @@ int lastValue = -1;
 Adafruit_MCP4725 mcp4725;
 
 void setup() {
+
+#if FASTADC == true
+  // set prescale to 16
+  sbi(ADCSRA, ADPS2);
+  cbi(ADCSRA, ADPS1);
+  cbi(ADCSRA, ADPS0);
+#endif
+
 #if DEBUG_ENABLED == true
   Serial.begin(9600);
 #endif
 
-  analogReference(EXTERNAL);
+  // analogReference(EXTERNAL); // this should not matter since board is powered via 5V pin
   initializeDac();
 }
 
 void loop() {
+#if DEBUG_ENABLED == true
+  int startMillis = millis();
+#endif
+
   int lowPercentage = readLowPedalPercentage();
   int highPercentage = readHighPedalPercentage();
 
@@ -47,6 +69,10 @@ void loop() {
 #if DEBUG_ENABLED == true
   String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
   Serial.println(percentagePrintValue);
+
+  int endMillis = millis();
+  String millisPrintValue = "Loop took:: " + String(endMillis - startMillis);
+  Serial.println(millisPrintValue);
 #endif
 
   if (calculatedAveragePercentage < 0) {
