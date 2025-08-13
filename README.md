@@ -60,9 +60,11 @@ Source code for the diagram is located in [circuit cddx file](./docs/circuit.cdd
 
 ![arduino_with_dac](./docs/assembled/arduino_with_dac.png)
 
-![arduino in case](./docs/assembled/arduino_in_case.png)
+Note: This is from a previous version, I've later on decided to insert wires from the top, as it makes it easier to mount the assembly in the case.
 
-![full adapter](./docs/assembled/full_adapter.png)
+![arduino in case](./docs/assembled/arduino_in_case.jpeg)
+
+![full adapter](./docs/assembled/full_adapter.jpeg)
 
 ## Arduino IDE setup
 
