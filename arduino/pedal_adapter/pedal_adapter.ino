@@ -3,7 +3,7 @@
 * Check README in main folder to verify wiring diagram
 **/
 #define DEBUG_ENABLED false
-#define FASTADC true
+#define FASTADC true  // with fastadc (prescaler set to 16) it is around 3 times faster than on the standard Arduino setting (measured with loops of 1k invocations of ADC)
 
 // defines for setting and clearing register bits
 #ifndef cbi
@@ -55,9 +55,6 @@ void setup() {
 }
 
 void loop() {
-#if DEBUG_ENABLED == true
-  int startMillis = millis();
-#endif
 
   int lowPercentage = readLowPedalPercentage();
   int highPercentage = readHighPedalPercentage();
@@ -69,10 +66,6 @@ void loop() {
 #if DEBUG_ENABLED == true
   String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
   Serial.println(percentagePrintValue);
-
-  int endMillis = millis();
-  String millisPrintValue = "Loop took:: " + String(endMillis - startMillis);
-  Serial.println(millisPrintValue);
 #endif
 
   if (calculatedAveragePercentage < 0) {
