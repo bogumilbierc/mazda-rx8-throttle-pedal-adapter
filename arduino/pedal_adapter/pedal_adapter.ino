@@ -77,6 +77,7 @@ void loop() {
 
 void initializeDac() {
   bool initialized = mcp4725.begin(DAC_ADDRESS);
+  Wire.setClock(400000); // Update I²C clock from 100 to 400 kHz
 #if DEBUG_ENABLED == true
   String dacInitPrintValue = "DAC initialized: " + String(initialized);
   Serial.println(dacInitPrintValue);
@@ -116,7 +117,7 @@ void setOutputValue(int calculatedAveragePercentage) {
     return;
   }
   int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
-  float voltageToUse = FRACTIONS_FOR_M113_ECU[percentageToUse];
-  mcp4725.setVoltage(voltageToUse, false);
+  uint16_t dacValue = FRACTIONS_FOR_M113_ECU[percentageToUse];
+  mcp4725.setVoltage(dacValue, false);
   lastValue = calculatedAveragePercentage;
 }
