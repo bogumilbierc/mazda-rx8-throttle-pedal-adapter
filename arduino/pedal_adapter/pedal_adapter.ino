@@ -1,5 +1,16 @@
 /**
 * Mazda RX-8 Throttle Pedal Adapter
+*
+* Reads two redundant analog signals from an accelerator pedal position sensor,
+* converts them to a throttle percentage (0-100%), and outputs a corresponding
+* voltage via an MCP4725 I²C DAC to drive an M113 ECU throttle input.
+*
+* Safety features:
+* - Dual-sensor cross-check: limits throttle to 30% if sensors disagree by >4%
+* - Hardware watchdog (250ms): resets to idle on MCU hang
+* - Output clamped to valid range to prevent out-of-bounds conditions
+*
+* Hardware: Arduino Nano V3 (ATmega328P), MCP4725 DAC
 * Check README in main folder to verify wiring diagram
 **/
 #define DEBUG_ENABLED false
@@ -15,11 +26,13 @@
 
 
 #include <Wire.h>
+#include <avr/pgmspace.h>
+#include <avr/wdt.h>
 //MCP4725 library
 #include <Adafruit_MCP4725.h>
 
 // fractions generated with "utils/dac-voltages-generator.html"
-const int FRACTIONS_FOR_M113_ECU[] = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 598, 630, 663, 704, 737, 778, 811, 843, 884, 917, 958, 991, 1024, 1064, 1097, 1138, 1171, 1204, 1245, 1277, 1318, 1351, 1384, 1425, 1458, 1499, 1531, 1564, 1605, 1638, 1679, 1712, 1744, 1785, 1818, 1859, 1892, 1925, 1966, 1998, 2039, 2072, 2105, 2146, 2179, 2220, 2252, 2285, 2326, 2359, 2400, 2433, 2465, 2506, 2539, 2580, 2613, 2646, 2686, 2719, 2760, 2793, 2826, 2867, 2899, 2940, 2973, 3006, 3047, 3080, 3121, 3153, 3186, 3227, 3260, 3301, 3334, 3366, 3407, 3440, 3481, 3514, 3547, 3588, 3620, 3661, 3694, 3727, 3768, 3801, 3842, 3874 };
+const int FRACTIONS_FOR_M113_ECU[] PROGMEM = { 270, 303, 344, 376, 417, 450, 483, 524, 557, 598, 630, 663, 704, 737, 778, 811, 843, 884, 917, 958, 991, 1024, 1064, 1097, 1138, 1171, 1204, 1245, 1277, 1318, 1351, 1384, 1425, 1458, 1499, 1531, 1564, 1605, 1638, 1679, 1712, 1744, 1785, 1818, 1859, 1892, 1925, 1966, 1998, 2039, 2072, 2105, 2146, 2179, 2220, 2252, 2285, 2326, 2359, 2400, 2433, 2465, 2506, 2539, 2580, 2613, 2646, 2686, 2719, 2760, 2793, 2826, 2867, 2899, 2940, 2973, 3006, 3047, 3080, 3121, 3153, 3186, 3227, 3260, 3301, 3334, 3366, 3407, 3440, 3481, 3514, 3547, 3588, 3620, 3661, 3694, 3727, 3768, 3801, 3842, 3874 };
 
 const int DAC_ADDRESS = 0x60;
 
@@ -38,6 +51,7 @@ int lastValue = -1;
 Adafruit_MCP4725 mcp4725;
 
 void setup() {
+  wdt_enable(WDTO_250MS);
 
 #if FASTADC == true
   // set prescale to 16
@@ -55,6 +69,7 @@ void setup() {
 }
 
 void loop() {
+  wdt_reset();
 
   int lowPercentage = readLowPedalPercentage();
   int highPercentage = readHighPedalPercentage();
@@ -64,13 +79,15 @@ void loop() {
   int calculatedAveragePercentage = (lowPercentage + highPercentage) / 2;
 
 #if DEBUG_ENABLED == true
-  String percentagePrintValue = "ThrottlePos:: " + String(calculatedAveragePercentage) + " low::" + String(lowPercentage) + " high::" + String(highPercentage);
-  Serial.println(percentagePrintValue);
+  Serial.print(F("ThrottlePos:: "));
+  Serial.print(calculatedAveragePercentage);
+  Serial.print(F(" low::"));
+  Serial.print(lowPercentage);
+  Serial.print(F(" high::"));
+  Serial.println(highPercentage);
 #endif
 
-  if (calculatedAveragePercentage < 0) {
-    calculatedAveragePercentage = 0;
-  }
+  calculatedAveragePercentage = constrain(calculatedAveragePercentage, 0, 100);
 
   setOutputValue(calculatedAveragePercentage);
 }
@@ -79,8 +96,8 @@ void initializeDac() {
   bool initialized = mcp4725.begin(DAC_ADDRESS);
   Wire.setClock(400000); // Update I²C clock from 100 to 400 kHz
 #if DEBUG_ENABLED == true
-  String dacInitPrintValue = "DAC initialized: " + String(initialized);
-  Serial.println(dacInitPrintValue);
+  Serial.print(F("DAC initialized: "));
+  Serial.println(initialized);
 #endif
   setOutputValue(0);  // set pedal to 0%
 }
@@ -102,7 +119,7 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
     // todo: blink led, beep - they are out of sync
     THROTTLE_LIMIT = 30;
 #if DEBUG_ENABLED == true
-    Serial.println("Sensors are out of sync.");
+    Serial.println(F("Sensors are out of sync."));
 #endif
   } else {
     THROTTLE_LIMIT = 100;
@@ -110,14 +127,14 @@ void setThrottleLimit(int lowPercentage, int highPercentage) {
 }
 
 void setOutputValue(int calculatedAveragePercentage) {
-  if (calculatedAveragePercentage == lastValue) {
+  int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
+  if (percentageToUse == lastValue) {
 #if DEBUG_ENABLED == true
-    Serial.println("Passed value is the same as previous value. Skipping DAC call.");
+    Serial.println(F("Passed value is the same as previous value. Skipping DAC call."));
 #endif
     return;
   }
-  int percentageToUse = min(calculatedAveragePercentage, THROTTLE_LIMIT);
-  uint16_t dacValue = FRACTIONS_FOR_M113_ECU[percentageToUse];
+  uint16_t dacValue = pgm_read_word(&FRACTIONS_FOR_M113_ECU[percentageToUse]);
   mcp4725.setVoltage(dacValue, false);
-  lastValue = calculatedAveragePercentage;
+  lastValue = percentageToUse;
 }
